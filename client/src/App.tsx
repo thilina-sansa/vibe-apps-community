@@ -12,6 +12,8 @@ import EditAppPage from "@/pages/EditAppPage";
 import MyAppsPage from "@/pages/MyAppsPage";
 import ProfilePage from "@/pages/ProfilePage";
 import AdminPortalPage from "@/pages/AdminPortalPage";
+import TermsPage from "@/pages/TermsPage";
+import PrivacyPolicyPage from "@/pages/PrivacyPolicyPage";
 import NotFound from "@/pages/not-found";
 import { useAuth } from "@/hooks/useAuth";
 import Footer from "@/components/Footer";
@@ -36,6 +38,8 @@ function Router() {
       <Route path="/my-apps" component={MyAppsPage} />
       <Route path="/profile" component={ProfilePage} />
       <Route path="/admin" component={AdminPortalPage} />
+      <Route path="/terms" component={TermsPage} />
+      <Route path="/privacy" component={PrivacyPolicyPage} />
       <Route path="/app/:id/edit" component={EditAppPage} />
       <Route path="/app/:id" component={AppDetailPage} />
       <Route component={NotFound} />
@@ -59,7 +63,7 @@ function Header() {
             <img src="/logo.png" alt="Logo" className="h-8 w-auto" />
             Resonance
           </Link>
-          <nav className="flex items-center gap-6">
+          <nav className="flex items-center gap-6 ml-5 mt-2">
             <Link href="/explore" className="text-sm font-medium text-secondary-foreground hover:text-primary transition-colors" data-testid="link-explore">
               Explore
             </Link>
