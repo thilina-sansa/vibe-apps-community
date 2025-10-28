@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useLocation } from "wouter";
 import type { AppListing } from "@shared/schema";
@@ -54,6 +54,8 @@ const NextArrow = ({ onClick, className }: ArrowProps) => {
 export default function HomePage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [, setLocation] = useLocation();
+  const [isAtEnd, setIsAtEnd] = useState(false);
+  const sliderRef = useRef<Slider>(null);
 
   // Fetch top-rated apps from last 4 months
   const { data: topRatedApps } = useQuery<AppListing[]>({
@@ -79,10 +81,21 @@ export default function HomePage() {
     }
   };
 
+  // Handle carousel slide change to update blur visibility
+  const handleAfterChange = (currentSlide: number) => {
+    if (!topTrendingApps) return;
+
+    // Determine slides to show based on screen size (using default of 4.5)
+    const slidesToShow = 4.5;
+    const totalSlides = topTrendingApps.length;
+
+    setIsAtEnd(currentSlide >= totalSlides - slidesToShow);
+  };
+
   return (
     <div className="min-h-screen mx-5">
       {/* Hero Section */}
-      <section className="bg-primary/25 py-32 px-4 relative bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/landing-page-background.png)' }}>
+      <section className="bg-primary/25 py-32 px-4 relative bg-cover bg-center bg-no-repeat rounded-2xl" style={{ backgroundImage: 'url(/landing-page-background.png)' }}>
         <div className="container mx-auto max-w-screen-2xl text-center">
           <div className="flex items-center justify-center gap-2 mb-6">
             <Sparkles className="w-8 h-8 text-black" />
@@ -173,8 +186,20 @@ export default function HomePage() {
                 Top Rated Apps
               </h2>
             </div>
-            <div className="carousel-container" style={{ margin: '0 -12px' }}>
+            <div className="carousel-container" style={{ margin: '0 -12px', position: 'relative' }}>
+              {/* Left gradient overlay - only show when at the end */}
+              {isAtEnd && (
+                <div className="carousel-gradient-left" />
+              )}
+
+              {/* Right gradient overlay - only show when not at end */}
+              {!isAtEnd && (
+                <div className="carousel-gradient-right" />
+              )}
+
               <Slider
+                ref={sliderRef}
+                afterChange={handleAfterChange}
                 {...{
                   dots: true,
                   infinite: false,
